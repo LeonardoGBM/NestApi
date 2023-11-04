@@ -3,12 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { ProductModule } from './product/product.module';
-import { ServiceModule } from './service/service.module';
+import { BookModule } from './book/book.module';
 
 @Module({
   imports: [UserModule,
   ProductModule,
-  ServiceModule],
+  BookModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
