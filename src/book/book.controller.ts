@@ -1,31 +1,42 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from "@nestjs/common";
+import { BookService } from './book.service';
+import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Put, Query } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { CreateBookDto } from "./dto/create-book.dto";
+import { ChangStateBookDto } from "./dto/chang-state-book.dto";
+import { UpdateBookDto } from './dto/update-book.dto';
+import { BookDto } from './dto/book.dto';
 
 @ApiTags('books')
 @Controller('books')
 export class BookController{
-  
+      constructor(private readonly bookService:BookService){
+      }
     @ApiOperation({description:'Buscar Libros', summary:'Find Books'})
     @Get()
-    find(){
-        return ['Edgar Alan Poe', 'Harry Potter','Bleach','Don quijote de la Mancha']
+    async find(@Query() query:any ){
+        const response = await this.bookService.find();
+        return response
     }
 
     @ApiOperation({description:'Buscar un Libro', summary:'Find One Book'})
     @Get(':id')
-    findOne(@Param('id') id:number){
-        return id;
+    async findOne(@Param('id', ParseIntPipe) id:number){
+        const response = await this.bookService.findOne(id);
+
+        return response;
     }
 
     @ApiOperation({description:'Agregar Libro', summary:'Add Book'})
     @Post()
-    create(@Body() payload:any){
-        return payload;
+    async create(@Body() payload: CreateBookDto){
+        const response = await this.bookService.create(payload);
+        return response;
     }
 
     @ApiOperation({description:'Editar Libros', summary:'Update Books'})
     @Put(':id')
-    update(@Param('id') id:number, @Body() payload:any){
+    async update(@Param('id', ParseIntPipe) id:number, @Body() payload:UpdateBookDto){
+        const response = await this.bookService.update(id, payload);
         return {id, body:payload}
     }
 
@@ -37,7 +48,9 @@ export class BookController{
 
     @ApiOperation({description:'Buscar Libros', summary:'Delete Books'})
     @Delete(':id')
-    delete(@Param('id') id:number){
-        return 'Libro Eliminado ${id}';
+    async delete(@Param('id') id:number){
+        const response = await this.bookService.delete(id);
+
+        return response;
     }
 }
